@@ -12,7 +12,7 @@ form = cgi.FieldStorage()
 vetorComandos =[]
 
 #Pegando os valores dos campos para cada maquina
-for i in range(1, 3):
+for i in range(1, 4):
     if form.getvalue('maq' + str(i) + '_ps'):
         comando = "ps"
         if form.getvalue('maq' + str(i) + '-ps'):
