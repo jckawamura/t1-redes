@@ -1,15 +1,17 @@
 #!/usr/bin/env python
-import cgi, cgitb
+import cgi
+import cgitb
 import socket
 
 cgitb.enable()
 print("Content-Type: text/html;charset=utf-8\r\n\r\n")
+print("<head><title>Trabalho Redes</title></head>")
 
 #Instanciando o FieldStorage
 form = cgi.FieldStorage()
 vetorComandos =[]
 
-#Pegando os valores dos campos para cada máquina
+#Pegando os valores dos campos para cada maquina
 for i in range(1, 3):
     if form.getvalue('maq' + str(i) + '_ps'):
         comando = "ps"
