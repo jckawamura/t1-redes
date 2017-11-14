@@ -2,6 +2,7 @@
 import cgitb
 import struct
 import io
+import socket
 
 cgitb.enable()
 print("Content-Type: text/html;charset=utf-8\r\n\r\n")
@@ -13,6 +14,41 @@ daemons = {
     "porta": [9001, 9002, 9003],
     "seq": [0, 0, 0]
 }
+
+def checksumIPV4(totalLen, identification, flag, ttl, protocol, src, dst):
+    checksum = (VERSION << 12) | (IHL << 8)
+    checksum += totalLen
+    checksum += identification
+    checksum += flag << 13
+    checksum += (ttl << 8) | protocol
+    #fonte da conversao de ip string para inteiro:
+    #https://stackoverflow.com/questions/5619685/conversion-from-ip-string-to-integer-and-backward-in-python
+    src = struct.unpack("!I", socket.inet_aton(src))[0]
+    checksum += src
+    dst = struct.unpack("!I", socket.inet_aton(dst))[0]
+    checksum += dst
+    checksum = (checksum >> 16) + (checksum & 0xFFFF)
+    checksum = (checksum >> 16) + (checksum & 0xFFFF)
+    checksum = (~checksum & 0xFFFF)
+
+    return checksum
+
+def verifyChecksumIPV4(totalLen, identification, flag, ttl, protocol, src, dst, headerChecksum):
+    checksum = (VERSION << 12) | (IHL << 8)
+    checksum += totalLen
+    checksum += identification
+    checksum += flag << 13
+    checksum += (ttl << 8) | protocol
+    checksum += headerChecksum #agora inclui o headerChecksum na soma
+    src = struct.unpack("!I", socket.inet_aton(src))[0]
+    checksum += src
+    dst = struct.unpack("!I", socket.inet_aton(dst))[0]
+    checksum += dst
+    checksum = (checksum >> 16) + (checksum & 0xFFFF)
+    checksum = (checksum >> 16) + (checksum & 0xFFFF)
+    checksum = (~checksum & 0xFFFF)
+
+    return checksum == 0x0000
 
 def criarpacote(src, dst, maq, protocol, options, flag, ttl):
     pacote = io.BytesIO()
