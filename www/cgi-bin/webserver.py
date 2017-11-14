@@ -43,3 +43,18 @@ for i in range(1, 4):
 
 for i in range(len(vetorComandos)):
     print(vetorComandos[i] + "<br><br>")
+
+#Dados da Comunicacao IP, PORTA, Tamanho Buffer
+IP = '127.0.0.1'
+PORTA = 9001
+BUFFER_TAM = 1024
+MSG = "Essa is minha msg!"
+
+s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+s.connect((IP, PORTA))
+s.send(MSG)
+data = s.recv(BUFFER_TAM)
+s.close()
+
+print( "received data:", data)
+
