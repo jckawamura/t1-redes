@@ -1,21 +1,59 @@
-#!/usr/bin/env python
+## Crição do daemon, utilizados pelas 3 máquinas
+## sudo python deamon.py --port 9001
+## sudo python deamon.py --port 9002
+## sudo python deamon.py --port 9003
 
+import os
+import cgi
+import cgitb
 import socket
 
-#Dados da conexao, ip, porta
-IP = '127.0.0.1'
-PORTA = 9001
-BUFFER_TAM = 1024 
+def main():
 
-s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-s.bind((IP, PORTA))
-s.listen(1)
+    ##Saída recebida do usuário:
 
-conn, addr = s.accept()
-print( 'Connection address:', addr)
-while 1:
-    data = conn.recv(BUFFER_TAM)
-    if not data: break
-    print( "received data:", data)
-    conn.send(data)  # echo
-conn.close()
+    msg = ' '
+    msg_host = ' '
+    porta = 9000
+
+    #Recebendo o Host e a Porta
+    tupla = ((msg_host, porta))
+
+    ## Estabelecendo conexao, aceitando. A ideia de ouvir as tres maquinas
+    cliente = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    cliente.bind(tupla)
+    cliente.listen(3)
+
+    while not 0:
+        con, enderecoCliente = cliente.accept()
+
+        ## Tamanho de 32 suficiente neste caso
+        msg = con.recv(32)
+
+        if mensagem:
+            comando = decodifica(mensagem)
+
+            mensagem = mensagem.split()
+            msgRecebida = os.popen(comando).read()
+            msgSaida = "RESPONSE " + mensagem[1] + " " + saidaTerminal
+
+        else:
+            break
+
+##Decoficando Mensagem
+##Recebe o comando a ser decodificado
+##Retorna comando decodificado
+
+def decodifica(comando):
+    comandoList = comando.split()
+    if comandoList[0] != "REQUEST":
+        return "fechar"
+    if comandoList[1] == "1":
+        enviaComando = "ps"
+    if comandoList[1] == "2":
+        enviaComando = "df"
+    if comandoList[1] == "3":
+        enviaComando = "finger"
+    if comandoList[1] == "4":
+        enviaComando = "uptime"
+    return enviaComando
