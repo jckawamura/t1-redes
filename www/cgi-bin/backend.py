@@ -115,3 +115,4 @@ def criarpacote(src, dst, maq, protocol, options, flag, ttl):
     daemons["seq"][maq] += 1
 
     return pacote
+

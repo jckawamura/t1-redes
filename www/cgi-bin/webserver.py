@@ -2,6 +2,7 @@
 import cgi
 import cgitb
 import socket
+from executaComandos import *
 
 cgitb.enable()
 print("Content-Type: text/html;charset=utf-8\r\n\r\n")
@@ -19,7 +20,6 @@ for i in range(1, 4):
             parametro = form.getvalue('maq' + str(i) + '-ps')
             comando = comando + " " + parametro
         vetorComandos.append(comando)
-
     if form.getvalue('maq' + str(i) + '_df'):
         comando = "df"
         if form.getvalue('maq' + str(i) + '-df'):
@@ -41,20 +41,9 @@ for i in range(1, 4):
             comando = comando + " " + parametro
         vetorComandos.append(comando)
 
-for i in range(len(vetorComandos)):
-    print(vetorComandos[i] + "<br><br>")
+    saidas = exeComandos(vetorComandos, i-1)
 
-#Dados da Comunicacao IP, PORTA, Tamanho Buffer
-IP = '127.0.0.1'
-PORTA = 9001
-BUFFER_TAM = 1024
-MSG = "Essa is minha msg!"
-
-s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-s.connect((IP, PORTA))
-s.send(MSG)
-data = s.recv(BUFFER_TAM)
-s.close()
-
-print( "received data:", data)
+    for i in range(len(saidas)):
+        print("<h3>" + campos[vetorComandos[i][0] - 1] + " " + vetorComandos[i][1] + "</h3>")
+        print(saidas[i].replace("\n", "<br>") + "<br><br>")
 
